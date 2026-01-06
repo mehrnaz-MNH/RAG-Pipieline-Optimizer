@@ -134,24 +134,37 @@
 # "For YOUR data, 512 chunks + nomic embeddings scored 20% higher!"
 # =============================================================================
 
-from typing import *
+from typing import List
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-def chunk_text(text: str, chunk_size: int, chunk_overlap: int) ->List[str]:
-#    - Create a RecursiveCharacterTextSplitter with given params
-#    - Split the text
-#    - Return list of chunk strings
-   pass
+
+def chunk_text(text: str, chunk_size: int, chunk_overlap: int) -> List[str]:
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap
+    )
+    chunks = text_splitter.split_text(text)
+    return chunks
+
+
 
 def get_chunking_strategies() -> List[dict]:
-#    - Returns predefined strategies for your pipeline comparison
-#    - Example: [
-#        {"name": "small", "chunk_size": 256, "chunk_overlap": 25},
-#        {"name": "medium", "chunk_size": 512, "chunk_overlap": 50},
-#        {"name": "large", "chunk_size": 1024, "chunk_overlap": 100},
-#      ]
-   pass
+   return [
+        {"name": "small", "chunk_size": 256, "chunk_overlap": 25},
+        {"name": "medium", "chunk_size": 512, "chunk_overlap": 50},
+        {"name": "large", "chunk_size": 1024, "chunk_overlap": 100},
+        {"name": "extra-large", "chunk_size": 2048, "chunk_overlap": 200}
 
-def chunk_text_with_strategy(text: str, strategy_name: str) -> List[str] :
-#    - Convenience function that looks up strategy by name
-#    - Calls chunk_text() with the strategy's parameters
-    pass
+    ]
+
+def chunk_text_with_strategy(text: str, strategy_name: str) -> List[str]:
+    strategies = get_chunking_strategies()
+    for s in strategies:
+        if s["name"] == strategy_name:
+            return chunk_text(text, s["chunk_size"], s["chunk_overlap"])
+
+    # Strategy not found - raise error with valid options
+    valid_names = [s["name"] for s in strategies]
+    raise ValueError(f"Unknown strategy '{strategy_name}'. Valid options: {valid_names}")
+
+
