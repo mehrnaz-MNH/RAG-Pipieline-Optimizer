@@ -1,5 +1,3 @@
-# Purpose : Extract Text From PDF And Word Doc
-# gets raw file and clean it for chunking
 from pypdf import PdfReader
 import docx
 import re
@@ -39,10 +37,8 @@ def extract_text_from_docx(file_path: str) -> str:
 
 def clean_text(text: str) -> str:
 
-    # Normalize whitespace (multiple spaces/newlines/tabs → single space)
     cleaned_text = re.sub(r'\s+', ' ', text)
 
-    # Remove leading/trailing whitespace
     cleaned_text = cleaned_text.strip()
 
     return cleaned_text
