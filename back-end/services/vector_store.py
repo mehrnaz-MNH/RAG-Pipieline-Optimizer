@@ -1,11 +1,11 @@
 
 from typing import List, Optional, Dict, Any
 import uuid
-
+from chromadb.types import Collection
 
 class VectorStore:
 
-    def __init__(self, collection) -> None:
+    def __init__(self, collection : Collection) -> None:
         self.collection = collection
 
     def add_chunks(
