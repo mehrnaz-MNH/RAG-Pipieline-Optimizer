@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from time import time
 
 from chromadb.types import Collection
 from langchain_community.llms import Ollama
@@ -17,6 +18,15 @@ class PipelineConfig:
     collection: Collection
     llm_model: str = "llama3.2:3b"
     n_results: int = 5
+
+@dataclass
+class QueryResult:
+    answer : str
+    retrieved_chunks : List[str]
+    distances : List[float]
+    latency_ms : float
+    pipeline_name : str
+
 
 
 class RAGPipeline:
@@ -36,6 +46,7 @@ class RAGPipeline:
         self.vector_store.add_chunks(chunks=chunks, embeddings=embeddings)
 
     def query(self, question: str) -> str:
+        start_time = time.time()
         query_embedding = self.embedding.embed_query(query=question)
         results = self.vector_store.query(
             query_embedding=query_embedding,
@@ -46,7 +57,13 @@ class RAGPipeline:
 
         prompt = self._build_prompt(context=context_chunks, question=question)
         answer = self._generate(prompt=prompt)
-        return answer
+        return QueryResult(
+            answer=answer,
+            retrieved_chunks=context_chunks,
+            distances=results["distances"][0] if results["distances"] else [],
+            latency_ms=(time.time() - start_time) * 1000,
+            pipeline_name=self.config.name
+        )
 
     def _build_prompt(self, context: List[str], question: str) -> str:
         context_text = "\n\n".join(context)

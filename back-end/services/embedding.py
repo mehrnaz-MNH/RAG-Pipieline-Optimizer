@@ -12,6 +12,7 @@ class EmbeddingModel:
     dimensions: int
 
 
+
 class Embedding:
 
     def __init__(self, model_name: str) -> None:
