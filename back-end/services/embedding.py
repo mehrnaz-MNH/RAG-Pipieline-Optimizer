@@ -46,7 +46,7 @@ class Embedding:
             ),
             "bge": EmbeddingModel(
                 name="bge",
-                model_id="bge-large-en-v1.5",
+                model_id="bge-large",
                 dimensions=1024,
             ),
         }

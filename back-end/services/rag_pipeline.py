@@ -69,15 +69,14 @@ class RAGPipeline:
         context_text = "\n\n".join(context)
 
         prompt = f"""You are a helpful assistant answering questions based on company documents.
-Use ONLY the following context to answer the question.
-If the context doesn't contain the answer, say "I don't have enough information."
+        Use ONLY the following context to answer the question.
+        If the context doesn't contain the answer, say "I don't have enough information."
+        Context:
+        {context_text}
 
-Context:
-{context_text}
+        Question: {question}
 
-Question: {question}
-
-Answer:"""
+        Answer:"""
         return prompt
 
     def _generate(self, prompt: str) -> str:
